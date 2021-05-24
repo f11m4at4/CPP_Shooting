@@ -7,6 +7,11 @@
 #include "PlayerCPP.generated.h"
 
 // BoxCollider 컴포넌트를 추가하고 싶다.
+//사용자가 발사 버튼을 누르면 총알을 발사하고 싶다.
+// 필요속성 : 총구위치, 공장
+//1. 사용자가 발사 버튼을 눌렀으니까
+//2. 총알을 만들어야 한다.
+//3. 총알을 위치시킨다.
 UCLASS()
 class CPP_SHOOTING_API APlayerCPP : public APawn
 {
@@ -23,6 +28,16 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Component")
 	class UStaticMeshComponent* meshComp;
 
+	// 필요속성 : 총구위치, 공장
+	UPROPERTY(VisibleAnywhere, Category = "Component")
+	class UArrowComponent* firePosition;
+	// 공장
+	UPROPERTY(EditDefaultsOnly, Category = "BulletClass")
+	TSubclassOf<class ABullet> bulletFactory;
+
+	// 총알 발사 처리할 함수
+	void YogaFire();
+
 public:
 	// Sets default values for this pawn's properties
 	APlayerCPP();
@@ -38,4 +53,20 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+
+public:
+	// 좌우 입력값 처리 함수 선언
+	// Axis 입력을 처리할 함수의 원형 void 함수이름(float);
+	void InputHorizontal(float value);
+	// 상하 입력값 처리 함수 선언
+	void InputVertical(float value);
+
+	// 좌우 입력을 받았을 때 해당 방향으로 이동하고 싶다.
+	UPROPERTY()
+	float h = 0;
+	UPROPERTY()
+	float v = 0;
+
+	UPROPERTY(EditAnywhere, Category="Stat")
+	float speed = 500;
 };

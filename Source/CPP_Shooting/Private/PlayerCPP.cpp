@@ -3,6 +3,11 @@
 
 #include "PlayerCPP.h"
 #include <Components/BoxComponent.h>
+#include <Components/StaticMeshComponent.h>
+#include <Materials/Material.h>
+#include <Components/ArrowComponent.h>
+
+
 
 // Sets default values
 APlayerCPP::APlayerCPP()
@@ -19,6 +24,30 @@ APlayerCPP::APlayerCPP()
 	meshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	// 루트의 자식으로 등록하자
 	meshComp->SetupAttachment(boxComp);
+
+	// Arrowcomponent 추가
+	firePosition = CreateDefaultSubobject<UArrowComponent>(TEXT("FirePosition"));
+	firePosition->SetupAttachment(boxComp);
+	firePosition->SetRelativeLocation(FVector(0, 0, 10));
+
+	// StaticMesh 데이터 동적으로 로드해서 할당하기
+	ConstructorHelpers::FObjectFinder<UStaticMesh> TempMesh(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'"));
+
+	// 애셋을 성공적으로 로드 했다면 true 를 리턴
+	if (TempMesh.Succeeded())
+	{
+		// 읽어들인 데이터를 할당
+		meshComp->SetStaticMesh(TempMesh.Object);
+	}
+	// 재질 로드하기
+	ConstructorHelpers::FObjectFinder<UMaterial> TempMat(TEXT("Material'/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial'"));
+
+	// 애셋을 성공적으로 로드 했다면 true 를 리턴
+	if (TempMat.Succeeded())
+	{
+		// 읽어들인 데이터를 할당
+		meshComp->SetMaterial(0, TempMat.Object);
+	}
 }
 
 // Called when the game starts or when spawned
@@ -34,12 +63,47 @@ void APlayerCPP::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// 오른쪽으로 이동시켜보자
+	// P = P0 + vt
+	// RightVector -> (x, y, z) (0, 1, 0)
+	//FVector v(0, 1, 0);
+	//FVector v = FVector(0, 1, 1);
+	// 1. 방향이 필요하다.
+	FVector vel = FVector(0, h, v);
+	vel.Normalize();
+	//v = v * 500;
+	vel *= speed;
+
+	FVector P0 = GetActorLocation();
+	FVector P = P0 + vel * DeltaTime;
+	// 2. 위치를 지정하고 싶다. -> 이동하고싶다.
+	SetActorLocation(P);
 }
 
 // Called to bind functionality to input
+// 사용자가 정의해놓은 입력 값과 처리할 함수를 묶어주는 역할
 void APlayerCPP::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
+	PlayerInputComponent->BindAxis(TEXT("Horizontal"), this, &APlayerCPP::InputHorizontal);
+
+	PlayerInputComponent->BindAxis(TEXT("Vertical"), this, &APlayerCPP::InputVertical);
 }
 
+// 사용자의 Horizontal 입력 처리할 함수
+void APlayerCPP::InputHorizontal(float value)
+{
+	h = value;
+}
+
+void APlayerCPP::InputVertical(float value)
+{
+	v = value;
+}
+
+// 총알발사 처리
+void APlayerCPP::YogaFire()
+{
+
+}
