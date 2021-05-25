@@ -6,6 +6,8 @@
 #include <Components/StaticMeshComponent.h>
 #include <Materials/Material.h>
 #include <Components/ArrowComponent.h>
+#include <Bullet.h>
+#include <Kismet/GameplayStatics.h>
 
 
 
@@ -78,6 +80,13 @@ void APlayerCPP::Tick(float DeltaTime)
 	FVector P = P0 + vel * DeltaTime;
 	// 2. 위치를 지정하고 싶다. -> 이동하고싶다.
 	SetActorLocation(P);
+
+	// Yaw 축으로 회전하고 싶다.
+	// R = R0 + rt
+	/*FRotator R0 = GetActorRotation();
+	FRotator r = FRotator(0, 1, 0) * 100;
+	FRotator R = R0 + r * DeltaTime;
+	SetActorRotation(R);*/
 }
 
 // Called to bind functionality to input
@@ -89,6 +98,9 @@ void APlayerCPP::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	PlayerInputComponent->BindAxis(TEXT("Horizontal"), this, &APlayerCPP::InputHorizontal);
 
 	PlayerInputComponent->BindAxis(TEXT("Vertical"), this, &APlayerCPP::InputVertical);
+
+	// Fire 버튼 입력 바인딩처리
+	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Pressed, this, &APlayerCPP::YogaFire);
 }
 
 // 사용자의 Horizontal 입력 처리할 함수
@@ -105,5 +117,15 @@ void APlayerCPP::InputVertical(float value)
 // 총알발사 처리
 void APlayerCPP::YogaFire()
 {
+	// 총알을 총알 공장에서 만들자.
+	// 만들때 그 자리에 다른 녀석이 있더라도 만들어 지도록 설정
+	FActorSpawnParameters Param;
+	Param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
+	GetWorld()->SpawnActor<ABullet>(bulletFactory,
+		firePosition->GetComponentLocation(),
+		firePosition->GetComponentRotation(), Param);
+
+	// 총알 발사 사운드 재생
+	UGameplayStatics::PlaySound2D(GetWorld(), bulletSound);
 }
