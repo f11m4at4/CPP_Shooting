@@ -26,6 +26,8 @@ APlayerCPP::APlayerCPP()
 	meshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	// 루트의 자식으로 등록하자
 	meshComp->SetupAttachment(boxComp);
+	// 충돌 없도록 설정
+	meshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	// Arrowcomponent 추가
 	firePosition = CreateDefaultSubobject<UArrowComponent>(TEXT("FirePosition"));

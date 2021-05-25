@@ -18,6 +18,7 @@ ABullet::ABullet()
 	// 2. ¿Ü°ü
 	meshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	meshComp->SetupAttachment(boxComp);
+	meshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
 // Called when the game starts or when spawned

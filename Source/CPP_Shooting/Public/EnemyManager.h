@@ -33,8 +33,12 @@ public:
 
 public:
 	// 필요속성 : 생성시간, 경과시간, 적공장
-	UPROPERTY()
+	UPROPERTY(EditAnywhere, Category="Setting")
 	float createTime = 2;
 	UPROPERTY()
 	float currentTime = 0;
+
+	// 공장
+	UPROPERTY(EditDefaultsOnly, Category = "EnemyClass")
+	TSubclassOf<class AEnemy> enemyFactory;
 };
