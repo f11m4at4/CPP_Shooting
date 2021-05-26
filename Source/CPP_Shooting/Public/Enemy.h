@@ -21,14 +21,14 @@ public:
 	class UStaticMeshComponent* meshComp;
 
 	// 이동속도
-	UPROPERTY(EditAnywhere, Category = "Stat")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stat")
 	float speed = 500;
 
 	// 필요속성 : 타겟
 	UPROPERTY(VisibleAnywhere, Category="Target")
 	class AActor* target;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, Category="Stat")
 	FVector dir = FVector(0, 0, 0);
 
 	// 폭발효과 속성
@@ -53,6 +53,10 @@ public:
 	// 충돌 이벤트 처리 함수
 	//virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
+
 	UFUNCTION()
 	void OnTriggerEnter(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
+	UFUNCTION(BlueprintCallable, Category="Code")
+	void OnCollisionEnter(AActor* OtherActor);
 };

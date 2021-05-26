@@ -33,7 +33,7 @@ void AEnemy::BeginPlay()
 	// 필요한것 : 처리할 이벤트 함수
 	// -> 컴포넌트 충돌을 위해서는 AddDynamic 함수를 이용해야 한다.
 	// -> AddDynamic 함수의 인자로 등록되는 이벤트 함수는 반드시 UFUNCTION 매크로를 사용해야 한다.
-	boxComp->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnTriggerEnter);
+	//boxComp->OnComponentBeginOverlap.AddDynamic(this, &AEnemy::OnTriggerEnter);
 
 	TArray<AActor*> objs;
 	// 태어날때 타겟을 찾아 놓자
@@ -112,6 +112,18 @@ void AEnemy::OnTriggerEnter(UPrimitiveComponent* OverlappedComponent, AActor* Ot
 		return;
 	}*/
 
+	// 폭발효과 생성하기
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), explosionFactory, GetActorTransform());
+
+	// 폭발 사운드 재생
+	UGameplayStatics::PlaySound2D(GetWorld(), explosionSound);
+
+	OtherActor->Destroy();
+	Destroy();
+}
+
+void AEnemy::OnCollisionEnter(AActor* OtherActor)
+{
 	// 폭발효과 생성하기
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), explosionFactory, GetActorTransform());
 
