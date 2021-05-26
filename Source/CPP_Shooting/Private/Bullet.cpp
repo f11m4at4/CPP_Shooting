@@ -39,6 +39,6 @@ void ABullet::Tick(float DeltaTime)
 	FVector P0 = GetActorLocation();
 	FVector P = P0 + vel * DeltaTime;
 	// 2. 위치를 지정하고 싶다. -> 이동하고싶다.
-	SetActorLocation(P);
+	SetActorLocation(P, true);
 }
 

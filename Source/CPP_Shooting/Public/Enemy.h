@@ -30,6 +30,14 @@ public:
 
 	UPROPERTY()
 	FVector dir = FVector(0, 0, 0);
+
+	// 폭발효과 속성
+	UPROPERTY(EditDefaultsOnly, Category="Setting")
+	class UParticleSystem* explosionFactory;
+
+	// 폭발 사운드
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	class USoundBase* explosionSound;
 public:	
 	// Sets default values for this actor's properties
 	AEnemy();
@@ -43,5 +51,8 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	// 충돌 이벤트 처리 함수
-	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+	//virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
+	UFUNCTION()
+	void OnTriggerEnter(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };
