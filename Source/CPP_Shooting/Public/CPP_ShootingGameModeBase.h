@@ -32,6 +32,8 @@ public:
 
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaSeconds) override;
+
 	// 총알 활성화시키는 함수
 	void SetBulletActive(ABullet* bullet, bool isActive);
 	

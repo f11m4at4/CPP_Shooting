@@ -5,6 +5,9 @@
 
 ACPP_ShootingGameModeBase::ACPP_ShootingGameModeBase()
 {
+	// Tick 함수가 계속 호출되도록 설정
+	PrimaryActorTick.bCanEverTick = true;
+
 	DefaultPawnClass = NULL;
 
 	// 탄창 크기 정해주자
@@ -22,6 +25,11 @@ void ACPP_ShootingGameModeBase::BeginPlay()
 
 		AddBullet(bullet);
 	}
+}
+
+void ACPP_ShootingGameModeBase::Tick(float DeltaSeconds)
+{
+	// 상태제어
 }
 
 void ACPP_ShootingGameModeBase::SetBulletActive(ABullet* bullet, bool isActive)

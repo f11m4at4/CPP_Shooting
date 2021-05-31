@@ -134,6 +134,11 @@ void APlayerCPP::YogaFire()
 	if (gameMode)
 	{
 		auto bullet = gameMode->GetBullet();
+		if (bullet == nullptr)
+		{
+			PRINTLOG(TEXT("Error, Empty Bullet Object Pool!!!"));
+			return;
+		}
 		// 활성화 시켜준다.
 		gameMode->SetBulletActive(bullet, true);
 		// 배치시킨다.
