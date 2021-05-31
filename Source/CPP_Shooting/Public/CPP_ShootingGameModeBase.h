@@ -25,6 +25,9 @@ public:
 	// 탄창에 총알을 추가해주는 함수
 	void AddBullet(ABullet* bullet);
 
+	// 탄창(풀)에서 총알을 하나 빼오기
+	ABullet* GetBullet();
+
 	// 필요속성 : 탄창크기, 탄창(오브젝트풀), 총알공장
 	UPROPERTY(EditDefaultsOnly, Category="Bullet")
 	int bulletPoolSize;
@@ -35,4 +38,6 @@ public:
 	// 공장
 	UPROPERTY(EditDefaultsOnly, Category = "BulletClass")
 	TSubclassOf<class ABullet> bulletFactory;
+private:
+	ABullet* CreateBullet();
 };

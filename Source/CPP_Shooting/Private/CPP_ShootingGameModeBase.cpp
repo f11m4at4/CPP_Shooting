@@ -18,11 +18,7 @@ void ACPP_ShootingGameModeBase::BeginPlay()
 	// 탄창에 총알 만들어서 넣자
 	for (int32 i = 0; i<bulletPoolSize; ++i)
 	{
-		// 1. 총알공장에서 총알을 만든다.
-		FActorSpawnParameters Param;
-		Param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-		
-		auto bullet = GetWorld()->SpawnActor<ABullet>(bulletFactory, FVector::ZeroVector, FRotator::ZeroRotator, Param);
+		ABullet* bullet = CreateBullet();
 
 		AddBullet(bullet);
 	}
@@ -42,4 +38,48 @@ void ACPP_ShootingGameModeBase::AddBullet(ABullet* bullet)
 
 	// 3. 총알을 비활성화 시킨다.
 	SetBulletActive(bullet, false);
+}
+
+ABullet* ACPP_ShootingGameModeBase::GetBullet()
+{
+	// 탄창에서 총알을 하나 빼오고 싶다.
+	/*
+	for (int32 i = 0;i<bulletPoolSize;++i)
+	{
+		// 안보인다. -> 비활성화
+		if (bulletPool[i]->IsHidden())
+		{
+			ABullet* bullet = bulletPool[i];
+			bulletPool.RemoveAt(0);
+			return bullet;
+		}
+	}*/
+	/*
+	// 배열에 값이 하나 미만이라면 null 을 반환
+	if (bulletPool.Num() < 1)
+	{
+		return nullptr;
+	}
+
+	// 1. 풀에서 총알을 하나 빼오기
+	ABullet* bullet = bulletPool[0];
+	// 2. 탄창에서 빼온 총알 없애기
+	bulletPool.RemoveAt(0);
+	// -> RemoveAt
+	// 3. 총알을 반환해주기
+	return bullet;
+	*/
+	ABullet* bullet = bulletPool.Pop();
+	return bullet;
+}
+
+ABullet* ACPP_ShootingGameModeBase::CreateBullet()
+{
+	// 1. 총알공장에서 총알을 만든다.
+	FActorSpawnParameters Param;
+	Param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+	auto bullet = GetWorld()->SpawnActor<ABullet>(bulletFactory, FVector::ZeroVector, FRotator::ZeroRotator, Param);
+
+	return bullet;
 }
