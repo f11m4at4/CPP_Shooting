@@ -4,6 +4,8 @@
 #include "DestroyZone.h"
 #include <Components/StaticMeshComponent.h>
 #include "PlayerCPP.h"
+#include "CPP_ShootingGameModeBase.h"
+#include "Bullet.h"
 
 
 // Sets default values
@@ -41,7 +43,17 @@ void ADestroyZone::OnCollisionEnter(UPrimitiveComponent* HitComponent, AActor* O
 		return;
 	}
 
-	// 부딪힌 녀석 제거
-	OtherActor->Destroy();
+	// 부딪힌 대상이 총알이라면 탄창에 다시 넣어주자
+	auto bullet = Cast<ABullet>(OtherActor);
+	if (bullet)
+	{
+		auto gameMode = Cast<ACPP_ShootingGameModeBase>(GetWorld()->GetAuthGameMode());
+		gameMode->AddBullet(bullet);
+	}
+	// 그렇지 않으면 Destroy 원래대로 하기
+	else
+	{
+		OtherActor->Destroy();
+	}
 }
 

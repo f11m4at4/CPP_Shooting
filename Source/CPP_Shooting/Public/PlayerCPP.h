@@ -31,9 +31,9 @@ public:
 	// 필요속성 : 총구위치, 공장
 	UPROPERTY(VisibleAnywhere, Category = "Component")
 	class UArrowComponent* firePosition;
-	// 공장
-	UPROPERTY(EditDefaultsOnly, Category = "BulletClass")
-	TSubclassOf<class ABullet> bulletFactory;
+	//// 공장
+	//UPROPERTY(EditDefaultsOnly, Category = "BulletClass")
+	//TSubclassOf<class ABullet> bulletFactory;
 
 	// 총알 발사 사운드
 	UPROPERTY(EditDefaultsOnly, Category = "Sound")

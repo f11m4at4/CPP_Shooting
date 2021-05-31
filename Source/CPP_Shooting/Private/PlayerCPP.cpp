@@ -8,7 +8,7 @@
 #include <Components/ArrowComponent.h>
 #include <Bullet.h>
 #include <Kismet/GameplayStatics.h>
-
+#include "CPP_ShootingGameModeBase.h"
 
 
 // Sets default values
@@ -121,13 +121,25 @@ void APlayerCPP::YogaFire()
 {
 	// 총알을 총알 공장에서 만들자.
 	// 만들때 그 자리에 다른 녀석이 있더라도 만들어 지도록 설정
-	FActorSpawnParameters Param;
+	/*FActorSpawnParameters Param;
 	Param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	GetWorld()->SpawnActor<ABullet>(bulletFactory,
 		firePosition->GetComponentLocation(),
-		firePosition->GetComponentRotation(), Param);
+		firePosition->GetComponentRotation(), Param);*/
 
+	// GameMode 클래스의 GetBullet 을 이용하여 총알 가져오기
+	auto gameMode = Cast<ACPP_ShootingGameModeBase>(GetWorld()->GetAuthGameMode());
+	// 만약 게임오드가 있다면
+	if (gameMode)
+	{
+		auto bullet = gameMode->GetBullet();
+		// 활성화 시켜준다.
+		gameMode->SetBulletActive(bullet, true);
+		// 배치시킨다.
+		bullet->SetActorLocation(firePosition->GetComponentLocation());
+		bullet->SetActorRotation(firePosition->GetComponentRotation());
+	}
 	// 총알 발사 사운드 재생
 	UGameplayStatics::PlaySound2D(GetWorld(), bulletSound);
 }

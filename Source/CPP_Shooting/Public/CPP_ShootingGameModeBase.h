@@ -9,6 +9,19 @@
 
 // 총알 오브젝트풀을 위한 속성 선언
 // 필요속성 : 탄창크기, 탄창(오브젝트풀), 총알공장
+
+// 게임의 상태제어
+// -> Ready, Playing, Gameover
+// 열거형
+UENUM(BlueprintType)
+enum class EGameState : uint8
+{
+	Ready UMETA(DisplayName = "READY_STATE"),
+	Playing UMETA(DisplayName = "PLAYING_STATE"),
+	Gameover UMETA(DisplayName = "GAMEOVER_STATE")
+};
+
+
 UCLASS()
 class CPP_SHOOTING_API ACPP_ShootingGameModeBase : public AGameModeBase
 {
@@ -28,16 +41,22 @@ public:
 	// 탄창(풀)에서 총알을 하나 빼오기
 	ABullet* GetBullet();
 
-	// 필요속성 : 탄창크기, 탄창(오브젝트풀), 총알공장
-	UPROPERTY(EditDefaultsOnly, Category="Bullet")
-	int bulletPoolSize;
-	
-	UPROPERTY(VisibleAnywhere, Category="Bullet")
-	TArray<ABullet*> bulletPool;
-	
-	// 공장
-	UPROPERTY(EditDefaultsOnly, Category = "BulletClass")
-	TSubclassOf<class ABullet> bulletFactory;
 private:
 	ABullet* CreateBullet();
+
+	// 상태변수
+	// -> Blueprint 에 속성(변수) 노출시키고 싶다.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "State", meta=(AllowPrivateAccess = true))
+	EGameState mState = EGameState::Ready;	
+
+	// 필요속성 : 탄창크기, 탄창(오브젝트풀), 총알공장
+	UPROPERTY(EditDefaultsOnly, Category = "Bullet", meta = (AllowPrivateAccess = true))
+	int bulletPoolSize;
+
+	UPROPERTY(VisibleAnywhere, Category = "Bullet", meta = (AllowPrivateAccess = true))
+	TArray<ABullet*> bulletPool;
+
+	// 공장
+	UPROPERTY(EditDefaultsOnly, Category = "BulletClass", meta = (AllowPrivateAccess = true))
+	TSubclassOf<class ABullet> bulletFactory;
 };
