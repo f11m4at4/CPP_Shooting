@@ -132,16 +132,25 @@ void AEnemy::OnCollisionEnter(AActor* OtherActor)
 	// 폭발 사운드 재생
 	UGameplayStatics::PlaySound2D(GetWorld(), explosionSound);
 
+	auto gameMode = Cast<ACPP_ShootingGameModeBase>(GetWorld()->GetAuthGameMode());
+	
 	// 부딪힌 대상이 총알이라면 탄창에 다시 넣어주자
 	auto bullet = Cast<ABullet>(OtherActor);
 	if (bullet)
 	{
-		auto gameMode = Cast<ACPP_ShootingGameModeBase>(GetWorld()->GetAuthGameMode());
 		gameMode->AddBullet(bullet);
 	}
 	// 그렇지 않으면 Destroy 원래대로 하기
 	else
 	{
+		// 부딪힌 녀석이 Player 라면
+		auto player = Cast<APlayerCPP>(OtherActor);
+
+		if (player)
+		{
+			// 게임 오버 상태로 전환하고 싶다.
+			gameMode->SetState(EGameState::Gameover);
+		}
 		OtherActor->Destroy();
 	}
 	Destroy();

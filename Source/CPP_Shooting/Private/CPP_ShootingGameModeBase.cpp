@@ -96,9 +96,19 @@ void ACPP_ShootingGameModeBase::PlayingPage()
 
 }
 // Gameover 메뉴표현하기
+// R 키를 누르면 다시 시작 시키기
 void ACPP_ShootingGameModeBase::GameoverPage()
 {
-
+	// R 키를 입력 받기
+	// 1. PlayerController 가져오기
+	APlayerController* myController = GetWorld()->GetFirstPlayerController();
+	//APlayerController* myController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	// 2. 키입력 처리 -> R키를 눌렀다면
+	// myController 가 있고 R 키를 눌렀다면
+	if (myController && myController->WasInputKeyJustPressed(EKeys::R))
+	{
+		PRINTLOG(TEXT("R Key Pressed!!!!!!!!!!!!"));
+	}
 }
 
 void ACPP_ShootingGameModeBase::SetBulletActive(ABullet* bullet, bool isActive)

@@ -59,6 +59,12 @@ public:
 	{
 		return mState;
 	}
+
+	// 상태 바꾸는 함수
+	void SetState(EGameState s)
+	{
+		mState = s;
+	}
 private:
 	ABullet* CreateBullet();
 
