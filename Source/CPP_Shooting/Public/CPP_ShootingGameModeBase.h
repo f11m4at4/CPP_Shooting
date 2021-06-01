@@ -48,6 +48,17 @@ public:
 	// 탄창(풀)에서 총알을 하나 빼오기
 	ABullet* GetBullet();
 
+	// BP 에서 함수를 구현하도록 설정하는 옵션
+	//UFUNCTION(BlueprintImplementableEvent, Category="PrintLog")
+	// BP 에 없으면 C++ 에 있는 함수를 사용하겠다라는 의미
+	// -> 단, 소스코드에서 함수는 이름_Implementation 으로 해주어야 한다.
+	UFUNCTION(BlueprintNativeEvent, Category="PrintLog")
+	void PrintEnumData(EGameState value);
+
+	EGameState GetState()
+	{
+		return mState;
+	}
 private:
 	ABullet* CreateBullet();
 
@@ -66,4 +77,11 @@ private:
 	// 공장
 	UPROPERTY(EditDefaultsOnly, Category = "BulletClass", meta = (AllowPrivateAccess = true))
 	TSubclassOf<class ABullet> bulletFactory;
+
+	// 필요속성 : (대기시간)일정시간, 경과시간
+	UPROPERTY(EditAnywhere, Category="State", meta = (AllowPrivateAccess = true))
+	float readyDelayTime = 2;
+
+	UPROPERTY()
+	float currentTime = 0;
 };

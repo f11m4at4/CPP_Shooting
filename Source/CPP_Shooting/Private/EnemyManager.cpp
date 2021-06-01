@@ -3,6 +3,7 @@
 
 #include "EnemyManager.h"
 #include "Enemy.h"
+#include "CPP_ShootingGameModeBase.h"
 
 // Sets default values
 AEnemyManager::AEnemyManager()
@@ -24,6 +25,13 @@ void AEnemyManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	auto gameMode = Cast<ACPP_ShootingGameModeBase>(GetWorld()->GetAuthGameMode());
+
+	// gamemode 의 상태가 playing 이 아니라면 아래 코드는 실행되지 않도록 하고 싶다.
+	if (gameMode->GetState() != EGameState::Playing)
+	{
+		return;
+	}
 	// - 일정시간에 한번씩 "적 생성" 로그를 찍고 싶다.
 	// 1. 시간이 흘렀으니까
 	currentTime += DeltaTime;

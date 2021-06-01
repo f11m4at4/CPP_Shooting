@@ -66,6 +66,14 @@ void APlayerCPP::BeginPlay()
 void APlayerCPP::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	// gamemode 의 상태가 playing 이 아니라면 아래 코드는 실행되지 않도록 하고 싶다.
+	auto gameMode = Cast<ACPP_ShootingGameModeBase>(GetWorld()->GetAuthGameMode());
+	
+	if (gameMode->GetState() != EGameState::Playing)
+	{
+		return;
+	}
 
 	// 오른쪽으로 이동시켜보자
 	// P = P0 + vt
@@ -130,7 +138,13 @@ void APlayerCPP::YogaFire()
 
 	// GameMode 클래스의 GetBullet 을 이용하여 총알 가져오기
 	auto gameMode = Cast<ACPP_ShootingGameModeBase>(GetWorld()->GetAuthGameMode());
-	
+
+	// gamemode 의 상태가 playing 이 아니라면 아래 코드는 실행되지 않도록 하고 싶다.
+	if (gameMode->GetState() != EGameState::Playing)
+	{
+		return;
+	}
+
 	// 만약 게임오드가 있다면
 	if (gameMode)
 	{

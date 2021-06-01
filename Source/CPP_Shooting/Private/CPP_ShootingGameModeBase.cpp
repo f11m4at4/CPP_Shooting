@@ -2,6 +2,7 @@
 
 
 #include "CPP_ShootingGameModeBase.h"
+#include "CPP_Shooting.h"
 
 ACPP_ShootingGameModeBase::ACPP_ShootingGameModeBase()
 {
@@ -46,6 +47,15 @@ void ACPP_ShootingGameModeBase::Tick(float DeltaSeconds)
 	//{
 	//	// to do
 	//}
+	
+	//// 현재 상태를 출력해 보고 싶다.
+	/*const UEnum* enumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("EGameState"), true);
+	if (enumPtr)
+	{
+		PRINTLOG(TEXT("State : %s"), *enumPtr->GetNameStringByValue((uint8)mState));
+	}*/
+	PrintEnumData(mState);
+
 	switch (mState)
 	{
 	case EGameState::Ready:
@@ -57,15 +67,26 @@ void ACPP_ShootingGameModeBase::Tick(float DeltaSeconds)
 	case EGameState::Gameover:
 		GameoverPage();
 		break;
-	default:
 	}
 }
 
 // 일정시간 기다렸다가 상태를 Playing 으로 전환하고 싶다.
-// -> Ready 텍스트 표현하기
+// -> Ready 텍스트 표현하기 log
+// 필요속성 : (대기시간)일정시간, 경과시간
 void ACPP_ShootingGameModeBase::ReadyPage()
 {
-
+	//PRINTLOG(TEXT("READY STATE"));
+	// 일정시간 기다렸다가 상태를 Playing 으로 전환하고 싶다.
+	// 1. 시간이 흘렀으니까
+	currentTime += GetWorld()->DeltaTimeSeconds;
+	// 2. 일정시간이 됐으니까
+	// 	   만약 경과시간이 대기시간을 초과하였다면
+	if (currentTime > readyDelayTime)
+	{
+		// 3. 상태를 Playing 으로 전환하고 싶다.
+		mState = EGameState::Playing;
+		currentTime = 0;
+	}
 }
 // Start 텍스트 표현하기
 // Start 텍스트는 2초후 사라진다.
@@ -127,6 +148,15 @@ ABullet* ACPP_ShootingGameModeBase::GetBullet()
 	*/
 	ABullet* bullet = bulletPool.Pop();
 	return bullet;
+}
+
+void ACPP_ShootingGameModeBase::PrintEnumData_Implementation(EGameState value)
+{
+	const UEnum* enumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("EGameState"), true);
+	if (enumPtr)
+	{
+		PRINTLOG(TEXT("State : %s"), *enumPtr->GetNameStringByValue((uint8)value));
+	}
 }
 
 ABullet* ACPP_ShootingGameModeBase::CreateBullet()
