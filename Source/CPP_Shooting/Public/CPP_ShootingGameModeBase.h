@@ -34,6 +34,11 @@ public:
 
 	virtual void Tick(float DeltaSeconds) override;
 
+	void ReadyPage();
+	void PlayingPage();
+	void GameoverPage();
+
+
 	// 총알 활성화시키는 함수
 	void SetBulletActive(ABullet* bullet, bool isActive);
 	

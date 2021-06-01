@@ -130,6 +130,7 @@ void APlayerCPP::YogaFire()
 
 	// GameMode 클래스의 GetBullet 을 이용하여 총알 가져오기
 	auto gameMode = Cast<ACPP_ShootingGameModeBase>(GetWorld()->GetAuthGameMode());
+	
 	// 만약 게임오드가 있다면
 	if (gameMode)
 	{

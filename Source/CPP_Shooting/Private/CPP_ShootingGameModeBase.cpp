@@ -29,7 +29,55 @@ void ACPP_ShootingGameModeBase::BeginPlay()
 
 void ACPP_ShootingGameModeBase::Tick(float DeltaSeconds)
 {
-	// 상태제어
+	// 상태제어 설계
+	//if (mState == EGameState::Ready)
+	//{
+	//	// to do
+	//}
+	//else if (mState == EGameState::Playing)
+	//{
+	//	// to do
+	//}
+	//else if (mState == EGameState::Gameover)
+	//{
+	//	// to do
+	//}
+	//else
+	//{
+	//	// to do
+	//}
+	switch (mState)
+	{
+	case EGameState::Ready:
+		ReadyPage();
+		break;
+	case EGameState::Playing:
+		PlayingPage();
+		break;
+	case EGameState::Gameover:
+		GameoverPage();
+		break;
+	default:
+	}
+}
+
+// 일정시간 기다렸다가 상태를 Playing 으로 전환하고 싶다.
+// -> Ready 텍스트 표현하기
+void ACPP_ShootingGameModeBase::ReadyPage()
+{
+
+}
+// Start 텍스트 표현하기
+// Start 텍스트는 2초후 사라진다.
+// 게임 동작하게 한다.
+void ACPP_ShootingGameModeBase::PlayingPage()
+{
+
+}
+// Gameover 메뉴표현하기
+void ACPP_ShootingGameModeBase::GameoverPage()
+{
+
 }
 
 void ACPP_ShootingGameModeBase::SetBulletActive(ABullet* bullet, bool isActive)
