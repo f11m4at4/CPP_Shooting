@@ -138,7 +138,7 @@ void AEnemy::OnCollisionEnter(AActor* OtherActor)
 	auto bullet = Cast<ABullet>(OtherActor);
 	if (bullet)
 	{
-		gameMode->AddBullet(bullet);
+		gameMode->AddBullet(bullet, true);
 	}
 	// 그렇지 않으면 Destroy 원래대로 하기
 	else

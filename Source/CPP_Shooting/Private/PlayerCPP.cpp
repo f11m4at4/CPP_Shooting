@@ -147,12 +147,21 @@ void APlayerCPP::YogaFire()
 	if (gameMode)
 	{
 		auto bullet = gameMode->GetBullet();
-		auto bullet2 = gameMode->GetBullet();
-		if (bullet == nullptr || bullet2 == nullptr)
+		if (bullet == nullptr)
 		{
 			PRINTLOG(TEXT("Error, Empty Bullet Object Pool!!!"));
 			return;
 		}
+		// 두번째 총알 가져 올때 탄창에 총알이 더이상 없다면
+		// 발사 할 수 없기 때문에 첫번째 가져온 총알은 다시 탄창에 반납한다.
+		auto bullet2 = gameMode->GetBullet();
+		if (bullet2 == nullptr)
+		{
+			gameMode->AddBullet(bullet);
+			PRINTLOG(TEXT("Error, Empty Bullet Object Pool!!!"));
+			return;
+		}
+
 		// 한발 발사한다.
 		gameMode->SetBulletActive(bullet, true);
 		// 배치시킨다.

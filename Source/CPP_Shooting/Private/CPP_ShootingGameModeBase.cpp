@@ -171,10 +171,15 @@ void ACPP_ShootingGameModeBase::SetBulletActive(ABullet* bullet, bool isActive)
 	bullet->SetActorTickEnabled(isActive);
 }
 
-void ACPP_ShootingGameModeBase::AddBullet(ABullet* bullet)
+void ACPP_ShootingGameModeBase::AddBullet(ABullet* bullet, bool bTest)
 {
 	// 2. 탄창에 총알을 넣는다.
 	bulletPool.AddUnique(bullet);
+
+	if (bTest)
+	{
+		PRINTLOG(TEXT("Count : %d"), bulletPool.Num());
+	}
 
 	// 3. 총알을 비활성화 시킨다.
 	SetBulletActive(bullet, false);

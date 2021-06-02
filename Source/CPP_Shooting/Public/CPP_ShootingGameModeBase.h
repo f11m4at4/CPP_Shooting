@@ -45,7 +45,7 @@ public:
 	void SetBulletActive(ABullet* bullet, bool isActive);
 	
 	// 탄창에 총알을 추가해주는 함수
-	void AddBullet(ABullet* bullet);
+	void AddBullet(ABullet* bullet, bool bTest = false);
 
 	// 탄창(풀)에서 총알을 하나 빼오기
 	ABullet* GetBullet();
