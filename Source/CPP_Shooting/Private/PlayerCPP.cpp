@@ -59,14 +59,12 @@ void APlayerCPP::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	UE_LOG(LogTemp, Warning, TEXT(__FUNCTION__));
 }
 
 // Called every frame
 void APlayerCPP::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
 	// gamemode 의 상태가 playing 이 아니라면 아래 코드는 실행되지 않도록 하고 싶다.
 	auto gameMode = Cast<ACPP_ShootingGameModeBase>(GetWorld()->GetAuthGameMode());
 	
@@ -149,16 +147,23 @@ void APlayerCPP::YogaFire()
 	if (gameMode)
 	{
 		auto bullet = gameMode->GetBullet();
-		if (bullet == nullptr)
+		auto bullet2 = gameMode->GetBullet();
+		if (bullet == nullptr || bullet2 == nullptr)
 		{
 			PRINTLOG(TEXT("Error, Empty Bullet Object Pool!!!"));
 			return;
 		}
-		// 활성화 시켜준다.
+		// 한발 발사한다.
 		gameMode->SetBulletActive(bullet, true);
 		// 배치시킨다.
-		bullet->SetActorLocation(firePosition->GetComponentLocation());
+		bullet->SetActorLocation(firePosition->GetComponentLocation() + FVector(0, 25, 0));
 		bullet->SetActorRotation(firePosition->GetComponentRotation());
+		
+		// 한발 발사한다.
+		gameMode->SetBulletActive(bullet2, true);
+		// 배치시킨다.
+		bullet2->SetActorLocation(firePosition->GetComponentLocation() + FVector(0, -25, 0));
+		bullet2->SetActorRotation(firePosition->GetComponentRotation());
 	}
 	// 총알 발사 사운드 재생
 	UGameplayStatics::PlaySound2D(GetWorld(), bulletSound);

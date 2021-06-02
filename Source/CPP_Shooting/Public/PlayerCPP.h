@@ -29,8 +29,11 @@ public:
 	class UStaticMeshComponent* meshComp;
 
 	// 필요속성 : 총구위치, 공장
-	UPROPERTY(VisibleAnywhere, Category = "Component")
+	UPROPERTY(EditAnywhere, Category = "Component")
 	class UArrowComponent* firePosition;
+
+	UPROPERTY(VisibleAnywhere, Category = "Component")
+	class UArrowComponent* firePosition2;
 	//// 공장
 	//UPROPERTY(EditDefaultsOnly, Category = "BulletClass")
 	//TSubclassOf<class ABullet> bulletFactory;

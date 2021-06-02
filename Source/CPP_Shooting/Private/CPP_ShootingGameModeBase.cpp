@@ -6,6 +6,7 @@
 #include "Enemy.h"
 #include <Kismet/GameplayStatics.h>
 #include <EngineUtils.h>
+#include "PlayerCPP.h"
 
 ACPP_ShootingGameModeBase::ACPP_ShootingGameModeBase()
 {
@@ -38,8 +39,32 @@ void ACPP_ShootingGameModeBase::InitGameState()
 	}
 
 	// 화면에 총알이 있으면 다 풀에 넣어준다.
+	// 1. 월드에 있는 총알을 찾아야 한다.
+	for (TActorIterator<ABullet> it(GetWorld()); it; ++it)
+	{
+		// 2. 탄창 밖에 있는 총알을 하나 가져온다.		
+		ABullet* bullet = *it;
+		// 3. 총알을 풀(탄창)에 넣어주고 싶다.
+		AddBullet(bullet);
+	}
 	// Player 가 없으면 만들어주자.
+	// 1. 내가 찾아봤거든
+	//AActor* playerObj = UGameplayStatics::GetActorOfClass(GetWorld(), APlayerCPP::StaticClass());
+	// 2. Player 가 없으니까
+	//if (playerObj == nullptr)
+	// 상태가 gameover 라면
+	if(mState == EGameState::Gameover)
+	{
+		FActorSpawnParameters param;
+		param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		// 3. Player 를 만들고 싶다.
+		auto player = GetWorld()->SpawnActor<APlayerCPP>(DefaultPawnClass, FVector::ZeroVector, FRotator::ZeroRotator, param);
+
+		// 4. PlayerController 가 빙의(소유 Possess)되도록 하자
+		GetWorld()->GetFirstPlayerController()->Possess(player);
+	}
 	// 게임의 상태를 Ready 로 설정해 주자.
+	mState = EGameState::Ready;
 }
 
 void ACPP_ShootingGameModeBase::BeginPlay()
@@ -184,6 +209,11 @@ ABullet* ACPP_ShootingGameModeBase::GetBullet()
 	// 3. 총알을 반환해주기
 	return bullet;
 	*/
+	// 풀에 총알이 없다면 null 리턴
+	if (bulletPool.Num() < 1)
+	{
+		return nullptr;
+	}
 	ABullet* bullet = bulletPool.Pop();
 	return bullet;
 }
