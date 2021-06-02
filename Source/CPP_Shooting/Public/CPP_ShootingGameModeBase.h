@@ -30,6 +30,9 @@ class CPP_SHOOTING_API ACPP_ShootingGameModeBase : public AGameModeBase
 public:
 	ACPP_ShootingGameModeBase();
 
+	// 게임이 초기화 될 때 호출됨.
+	virtual void InitGameState() override;
+
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaSeconds) override;

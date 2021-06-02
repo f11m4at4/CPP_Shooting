@@ -40,7 +40,7 @@ void AEnemyManager::Tick(float DeltaTime)
 	{
 		currentTime = 0;
 		// 3. 로그찍기
-		PRINTLOG(TEXT("Create Enemy"));
+		//PRINTLOG(TEXT("Create Enemy"));
 		// 적을 만들고 싶다.
 		// 위치는 EnemyManager 의 위치
 		FActorSpawnParameters Param;

@@ -3,6 +3,9 @@
 
 #include "CPP_ShootingGameModeBase.h"
 #include "CPP_Shooting.h"
+#include "Enemy.h"
+#include <Kismet/GameplayStatics.h>
+#include <EngineUtils.h>
 
 ACPP_ShootingGameModeBase::ACPP_ShootingGameModeBase()
 {
@@ -13,6 +16,30 @@ ACPP_ShootingGameModeBase::ACPP_ShootingGameModeBase()
 
 	// 탄창 크기 정해주자
 	bulletPoolSize = 10;
+}
+
+void ACPP_ShootingGameModeBase::InitGameState()
+{
+	Super::InitGameState();
+
+	// 화면에 Enemy 가 있으면 다 제거해준다.
+	/*
+	TArray<AActor*> objs;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemy::StaticClass(), objs);
+	for (auto obj:objs)
+	{
+		AEnemy* enemy = Cast<AEnemy>(obj);
+		enemy->Destroy();
+	}
+	*/
+	for (TActorIterator<AEnemy> it( GetWorld() ) ; it; ++it )
+	{
+		it->Destroy();
+	}
+
+	// 화면에 총알이 있으면 다 풀에 넣어준다.
+	// Player 가 없으면 만들어주자.
+	// 게임의 상태를 Ready 로 설정해 주자.
 }
 
 void ACPP_ShootingGameModeBase::BeginPlay()
@@ -54,7 +81,7 @@ void ACPP_ShootingGameModeBase::Tick(float DeltaSeconds)
 	{
 		PRINTLOG(TEXT("State : %s"), *enumPtr->GetNameStringByValue((uint8)mState));
 	}*/
-	PrintEnumData(mState);
+	//PrintEnumData(mState);
 
 	switch (mState)
 	{
@@ -108,6 +135,7 @@ void ACPP_ShootingGameModeBase::GameoverPage()
 	if (myController && myController->WasInputKeyJustPressed(EKeys::R))
 	{
 		PRINTLOG(TEXT("R Key Pressed!!!!!!!!!!!!"));
+		ResetLevel();
 	}
 }
 
