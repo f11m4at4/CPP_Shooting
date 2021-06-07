@@ -73,6 +73,11 @@ void ACPP_ShootingGameModeBase::InitGameState()
 	{
 		readyUI->AddToViewport();
 	}
+
+	if (gameoverUI)
+	{
+		gameoverUI->RemoveFromViewport();
+	}
 }
 
 void ACPP_ShootingGameModeBase::BeginPlay()
@@ -102,6 +107,18 @@ void ACPP_ShootingGameModeBase::BeginPlay()
 		readyUI = CreateWidget<UUserWidget>(GetWorld(), readyUIFactory);
 		// 화면에 UI 가 보이도록 하기
 		readyUI->AddToViewport();
+	}
+
+	// start UI 만들자
+	if (startUIFactory)
+	{
+		startUI = CreateWidget<UUserWidget>(GetWorld(), startUIFactory);
+	}
+
+	// start UI 만들자
+	if (gameoverUIFactory)
+	{
+		gameoverUI = CreateWidget<UUserWidget>(GetWorld(), gameoverUIFactory);
 	}
 }
 
@@ -169,6 +186,11 @@ void ACPP_ShootingGameModeBase::ReadyPage()
 		{
 			readyUI->RemoveFromViewport();
 		}
+		// Start UI 가 화면에 보여지게 하자
+		if (startUI)
+		{
+			startUI->AddToViewport();
+		}
 	}
 }
 // Start 텍스트 표현하기
@@ -176,7 +198,15 @@ void ACPP_ShootingGameModeBase::ReadyPage()
 // 게임 동작하게 한다.
 void ACPP_ShootingGameModeBase::PlayingPage()
 {
-
+	// 1. 시간이 흐른다.
+	currentTime += GetWorld()->DeltaTimeSeconds;
+	// 2. 만약 경과시간이 start ui 시간을 초과 했다면
+	if (currentTime > startUITime)
+	{
+		// 3. ui 없애주자
+		startUI->RemoveFromViewport();
+		currentTime = 0;
+	}
 }
 // Gameover 메뉴표현하기
 // R 키를 누르면 다시 시작 시키기
@@ -260,6 +290,21 @@ void ACPP_ShootingGameModeBase::PrintEnumData_Implementation(EGameState value)
 	if (enumPtr)
 	{
 		PRINTLOG(TEXT("State : %s"), *enumPtr->GetNameStringByValue((uint8)value));
+	}
+}
+
+void ACPP_ShootingGameModeBase::SetState(EGameState s)
+{
+	mState = s;
+	// 만약 변경된 상태가 Gameover 라면 widget 보여주자
+	if (mState == EGameState::Gameover)
+	{
+		// 게임 일시 정지
+		UGameplayStatics::SetGamePaused(GetWorld(), true);
+		// 마우스커서 보이도록 한다.
+		GetWorld()->GetFirstPlayerController()->bShowMouseCursor = true;
+
+		gameoverUI->AddToViewport();
 	}
 }
 

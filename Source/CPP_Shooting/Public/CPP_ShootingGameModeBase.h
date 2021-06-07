@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "Bullet.h"
+#include <Blueprint/UserWidget.h>
 #include "CPP_ShootingGameModeBase.generated.h"
 
 // 총알 오브젝트풀을 위한 속성 선언
@@ -63,10 +64,8 @@ public:
 	}
 
 	// 상태 바꾸는 함수
-	void SetState(EGameState s)
-	{
-		mState = s;
-	}
+	void SetState(EGameState s);
+
 private:
 	ABullet* CreateBullet();
 
@@ -100,4 +99,23 @@ private:
 	// ready ui 를 재활용 하기 위해 속성으로 등록해 놓고 사용하자.
 	UPROPERTY()
 	class UUserWidget* readyUI;
+
+	// Start Widget BP 공장 선언
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (AllowPrivateAccess = true))
+	TSubclassOf<class UUserWidget> startUIFactory;
+
+	// Start ui 를 재활용 하기 위해 속성으로 등록해 놓고 사용하자.
+	UPROPERTY()
+	class UUserWidget* startUI;
+
+	// Gameover Widget BP 공장 선언
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta = (AllowPrivateAccess = true))
+	TSubclassOf<class UUserWidget> gameoverUIFactory;
+
+	// gameover ui 를 재활용 하기 위해 속성으로 등록해 놓고 사용하자.
+	UPROPERTY()
+	class UUserWidget* gameoverUI;
+
+	UPROPERTY(EditAnywhere, Category="UI", meta = (AllowPrivateAccess = true))
+	float startUITime = 1.5f;
 };
