@@ -92,4 +92,12 @@ private:
 
 	UPROPERTY()
 	float currentTime = 0;
+
+	// Ready Widget BP 공장 선언
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI", meta=(AllowPrivateAccess=true))
+	TSubclassOf<class UUserWidget> readyUIFactory;
+
+	// ready ui 를 재활용 하기 위해 속성으로 등록해 놓고 사용하자.
+	UPROPERTY()
+	class UUserWidget* readyUI;
 };

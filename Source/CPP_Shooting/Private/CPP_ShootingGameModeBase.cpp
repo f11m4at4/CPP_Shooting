@@ -7,6 +7,7 @@
 #include <Kismet/GameplayStatics.h>
 #include <EngineUtils.h>
 #include "PlayerCPP.h"
+#include <Blueprint/UserWidget.h>
 
 ACPP_ShootingGameModeBase::ACPP_ShootingGameModeBase()
 {
@@ -65,18 +66,42 @@ void ACPP_ShootingGameModeBase::InitGameState()
 	}
 	// 게임의 상태를 Ready 로 설정해 주자.
 	mState = EGameState::Ready;
+
+	// readyUI 가 있다면 화면에 출력해주기
+	// -> reset 버튼이 눌렸을 때
+	if (readyUI)
+	{
+		readyUI->AddToViewport();
+	}
 }
 
 void ACPP_ShootingGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// 탄창에 총알 만들어서 넣자
-	for (int32 i = 0; i<bulletPoolSize; ++i)
+	// 총알 공장 주소가 없다면
+	if (bulletFactory)
 	{
-		ABullet* bullet = CreateBullet();
+		// 탄창에 총알 만들어서 넣자
+		for (int32 i = 0; i < bulletPoolSize; ++i)
+		{
+			ABullet* bullet = CreateBullet();
 
-		AddBullet(bullet);
+			if (bullet)
+			{
+				AddBullet(bullet);
+			}
+		}
+	}
+
+	// 태어날 때 Ready UI 만들기
+	// 만약 Ready UI 공장이 있다면
+	if (readyUIFactory)
+	{
+		// Ready UI 를 하나 만들고 싶다.
+		readyUI = CreateWidget<UUserWidget>(GetWorld(), readyUIFactory);
+		// 화면에 UI 가 보이도록 하기
+		readyUI->AddToViewport();
 	}
 }
 
@@ -138,6 +163,12 @@ void ACPP_ShootingGameModeBase::ReadyPage()
 		// 3. 상태를 Playing 으로 전환하고 싶다.
 		mState = EGameState::Playing;
 		currentTime = 0;
+
+		// 화면에 있는 ready ui 를 제거 하고 싶다.
+		if (readyUI)
+		{
+			readyUI->RemoveFromViewport();
+		}
 	}
 }
 // Start 텍스트 표현하기
@@ -233,7 +264,7 @@ void ACPP_ShootingGameModeBase::PrintEnumData_Implementation(EGameState value)
 }
 
 ABullet* ACPP_ShootingGameModeBase::CreateBullet()
-{
+{	
 	// 1. 총알공장에서 총알을 만든다.
 	FActorSpawnParameters Param;
 	Param.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
