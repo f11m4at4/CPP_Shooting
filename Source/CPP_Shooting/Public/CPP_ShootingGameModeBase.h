@@ -118,4 +118,13 @@ private:
 
 	UPROPERTY(EditAnywhere, Category="UI", meta = (AllowPrivateAccess = true))
 	float startUITime = 1.5f;
+
+	// 현재점수
+	int32 curScore = 0;
+	// 최고점수
+	int32 topScore = 0;
+
+	// UserWidget -> ScoreUI
+	UPROPERTY(EditDefaultsOnly, Category="UI", meta = (AllowPrivateAccess = true))
+	TSubclassOf<class UUserWidget> scoreUIFactory;
 };

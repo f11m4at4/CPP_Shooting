@@ -8,6 +8,7 @@
 #include <EngineUtils.h>
 #include "PlayerCPP.h"
 #include <Blueprint/UserWidget.h>
+#include "ScoreUI.h"
 
 ACPP_ShootingGameModeBase::ACPP_ShootingGameModeBase()
 {
@@ -119,6 +120,13 @@ void ACPP_ShootingGameModeBase::BeginPlay()
 	if (gameoverUIFactory)
 	{
 		gameoverUI = CreateWidget<UUserWidget>(GetWorld(), gameoverUIFactory);
+	}
+
+	// scoreui 생성하고 등록하자
+	auto scoreUI = CreateWidget<UScoreUI>(GetWorld(), scoreUIFactory);
+	if (scoreUI)
+	{
+		scoreUI->AddToViewport();
 	}
 }
 
