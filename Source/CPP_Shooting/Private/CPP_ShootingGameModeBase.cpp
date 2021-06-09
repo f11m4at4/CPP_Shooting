@@ -81,31 +81,27 @@ void ACPP_ShootingGameModeBase::InitGameState()
 		gameoverUI->RemoveFromViewport();
 	}
 	// 데이터 로드하기
-	// savedata 생성
-	// Score 데이터가 존재하는지 조사하기
-	// bool isExist = UGameplayStatics::DoesSaveGameExist(TEXT("Score"), 0);
-
-	saveData = Cast<USaveData>(UGameplayStatics::LoadGameFromSlot(TEXT("Score"), 0));
-	// 만약 saveData 가 null 이라면 없다면?
-	if (saveData == nullptr)
+	// 1. InitGameState
+	// -> SaveData 로드
+	saveData = Cast<USaveData>(UGameplayStatics::LoadGameFromSlot(TEXT("TopScore"), 0));
+	// -> 만약 저장데이터가 없으면
+	if(saveData == nullptr)
 	{
-		//  -> 새롭게 저장 슬롯을 만들자
+		// SaveData 하나 만든다.
 		auto saveGame = UGameplayStatics::CreateSaveGameObject(USaveData::StaticClass());
 		saveData = Cast<USaveData>(saveGame);
-		// 아무런 데이터가 없는 초기 상태
 		saveData->topScore = 0;
-		UGameplayStatics::SaveGameToSlot(saveData, TEXT("Score"), 0);
-	}
-	// 그렇지 않다면
-	else
-	{
-		//  -> 데이터를 가져와서 topScore 에 할당해 주자
-		topScore = saveData->topScore;
+		// 저장 슬롯 만들어준다.
+		UGameplayStatics::SaveGameToSlot(saveData, TEXT("TopScore"), 0);
 	}
 
+	// -> topScore 에 로드된 데이터 할당
+	topScore = saveData->topScore;
+	curScore = 0;
 	if (scoreUI)
 	{
 		// ui 에 표시해주기
+		scoreUI->PrintCurrentScore(curScore);
 		scoreUI->PrintTopScore(topScore);
 	}
 }
@@ -114,7 +110,6 @@ void ACPP_ShootingGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
 
 	// 총알 공장 주소가 없다면
 	if (bulletFactory)
@@ -158,6 +153,9 @@ void ACPP_ShootingGameModeBase::BeginPlay()
 	if (scoreUI)
 	{
 		scoreUI->AddToViewport();
+		// top Score 를 ui 에 표시
+		scoreUI->PrintCurrentScore(curScore);
+		scoreUI->PrintTopScore(topScore);
 	}
 }
 
@@ -375,8 +373,10 @@ void ACPP_ShootingGameModeBase::SetCurrentScore(int32 point)
 		// topScore ui 갱신
 		scoreUI->PrintTopScore(topScore);
 		
+		saveData->topScore = topScore;
+
 		// 데이터를 저장해야 한다.
-		UGameplayStatics::SaveGameToSlot(saveData, TEXT("Score"), 0);
+		UGameplayStatics::SaveGameToSlot(saveData, TEXT("TopScore"), 0);
 	}
 }
 

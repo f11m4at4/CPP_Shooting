@@ -9,6 +9,7 @@
 #include <Bullet.h>
 #include <Kismet/GameplayStatics.h>
 #include "CPP_ShootingGameModeBase.h"
+#include "PlayerMove.h"
 
 
 // Sets default values
@@ -52,6 +53,9 @@ APlayerCPP::APlayerCPP()
 		// 읽어들인 데이터를 할당
 		meshComp->SetMaterial(0, TempMat.Object);
 	}
+
+	// PlayerMove 컴포넌트 추가하기
+	playerMove = CreateDefaultSubobject<UPlayerMove>(TEXT("PlayerMove"));
 }
 
 // Called when the game starts or when spawned
@@ -65,36 +69,7 @@ void APlayerCPP::BeginPlay()
 void APlayerCPP::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	// gamemode 의 상태가 playing 이 아니라면 아래 코드는 실행되지 않도록 하고 싶다.
-	auto gameMode = Cast<ACPP_ShootingGameModeBase>(GetWorld()->GetAuthGameMode());
 	
-	if (gameMode->GetState() != EGameState::Playing)
-	{
-		return;
-	}
-
-	// 오른쪽으로 이동시켜보자
-	// P = P0 + vt
-	// RightVector -> (x, y, z) (0, 1, 0)
-	//FVector v(0, 1, 0);
-	//FVector v = FVector(0, 1, 1);
-	// 1. 방향이 필요하다.
-	FVector vel = FVector(0, h, v);
-	vel.Normalize();
-	//v = v * 500;
-	vel *= speed;
-
-	FVector P0 = GetActorLocation();
-	FVector P = P0 + vel * DeltaTime;
-	// 2. 위치를 지정하고 싶다. -> 이동하고싶다.
-	SetActorLocation(P, true);
-
-	// Yaw 축으로 회전하고 싶다.
-	// R = R0 + rt
-	/*FRotator R0 = GetActorRotation();
-	FRotator r = FRotator(0, 1, 0) * 100;
-	FRotator R = R0 + r * DeltaTime;
-	SetActorRotation(R);*/
 }
 
 // Called to bind functionality to input
@@ -103,23 +78,10 @@ void APlayerCPP::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAxis(TEXT("Horizontal"), this, &APlayerCPP::InputHorizontal);
-
-	PlayerInputComponent->BindAxis(TEXT("Vertical"), this, &APlayerCPP::InputVertical);
+	playerMove->SetupPlayerInputComponent(PlayerInputComponent);
 
 	// Fire 버튼 입력 바인딩처리
 	PlayerInputComponent->BindAction(TEXT("Fire"), IE_Pressed, this, &APlayerCPP::YogaFire);
-}
-
-// 사용자의 Horizontal 입력 처리할 함수
-void APlayerCPP::InputHorizontal(float value)
-{
-	h = value;
-}
-
-void APlayerCPP::InputVertical(float value)
-{
-	v = value;
 }
 
 // 총알발사 처리

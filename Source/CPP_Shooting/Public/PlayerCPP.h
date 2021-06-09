@@ -34,6 +34,11 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "Component")
 	class UArrowComponent* firePosition2;
+
+	// PlayerMove 컴포넌트 추가
+	UPROPERTY(VisibleAnywhere, Category = "Component")
+	class UPlayerMove* playerMove;
+
 	//// 공장
 	//UPROPERTY(EditDefaultsOnly, Category = "BulletClass")
 	//TSubclassOf<class ABullet> bulletFactory;
@@ -60,20 +65,4 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-
-public:
-	// 좌우 입력값 처리 함수 선언
-	// Axis 입력을 처리할 함수의 원형 void 함수이름(float);
-	void InputHorizontal(float value);
-	// 상하 입력값 처리 함수 선언
-	void InputVertical(float value);
-
-	// 좌우 입력을 받았을 때 해당 방향으로 이동하고 싶다.
-	UPROPERTY()
-	float h = 0;
-	UPROPERTY()
-	float v = 0;
-
-	UPROPERTY(EditAnywhere, Category="Stat")
-	float speed = 500;
 };
