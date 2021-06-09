@@ -9,6 +9,7 @@
 #include "PlayerCPP.h"
 #include <Blueprint/UserWidget.h>
 #include "ScoreUI.h"
+#include "SaveData.h"
 
 ACPP_ShootingGameModeBase::ACPP_ShootingGameModeBase()
 {
@@ -79,11 +80,41 @@ void ACPP_ShootingGameModeBase::InitGameState()
 	{
 		gameoverUI->RemoveFromViewport();
 	}
+	// 데이터 로드하기
+	// savedata 생성
+	// Score 데이터가 존재하는지 조사하기
+	// bool isExist = UGameplayStatics::DoesSaveGameExist(TEXT("Score"), 0);
+
+	saveData = Cast<USaveData>(UGameplayStatics::LoadGameFromSlot(TEXT("Score"), 0));
+	// 만약 saveData 가 null 이라면 없다면?
+	if (saveData == nullptr)
+	{
+		//  -> 새롭게 저장 슬롯을 만들자
+		auto saveGame = UGameplayStatics::CreateSaveGameObject(USaveData::StaticClass());
+		saveData = Cast<USaveData>(saveGame);
+		// 아무런 데이터가 없는 초기 상태
+		saveData->topScore = 0;
+		UGameplayStatics::SaveGameToSlot(saveData, TEXT("Score"), 0);
+	}
+	// 그렇지 않다면
+	else
+	{
+		//  -> 데이터를 가져와서 topScore 에 할당해 주자
+		topScore = saveData->topScore;
+	}
+
+	if (scoreUI)
+	{
+		// ui 에 표시해주기
+		scoreUI->PrintTopScore(topScore);
+	}
 }
 
 void ACPP_ShootingGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
+
+	
 
 	// 총알 공장 주소가 없다면
 	if (bulletFactory)
@@ -123,7 +154,7 @@ void ACPP_ShootingGameModeBase::BeginPlay()
 	}
 
 	// scoreui 생성하고 등록하자
-	auto scoreUI = CreateWidget<UScoreUI>(GetWorld(), scoreUIFactory);
+	scoreUI = CreateWidget<UScoreUI>(GetWorld(), scoreUIFactory);
 	if (scoreUI)
 	{
 		scoreUI->AddToViewport();
@@ -325,4 +356,31 @@ ABullet* ACPP_ShootingGameModeBase::CreateBullet()
 	auto bullet = GetWorld()->SpawnActor<ABullet>(bulletFactory, FVector::ZeroVector, FRotator::ZeroRotator, Param);
 
 	return bullet;
+}
+
+void ACPP_ShootingGameModeBase::SetCurrentScore(int32 point)
+{
+	// 현재 접수 세팅
+	curScore = point;
+	// UI 에 표시하고 싶다.	
+	// scoreui 의 ui widget 에 값을 할당하고 싶다.
+	scoreUI->PrintCurrentScore(curScore);
+
+	// top score 는 언제 갱신이 될까??
+	// 현재 점수가 최고 점수를 넘어서면
+	if (curScore > topScore)
+	{
+		// 현재점수가 최고점수가 된다.
+		topScore = curScore;
+		// topScore ui 갱신
+		scoreUI->PrintTopScore(topScore);
+		
+		// 데이터를 저장해야 한다.
+		UGameplayStatics::SaveGameToSlot(saveData, TEXT("Score"), 0);
+	}
+}
+
+int32 ACPP_ShootingGameModeBase::GetCurrentScore()
+{
+	return curScore;
 }

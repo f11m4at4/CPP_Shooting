@@ -10,7 +10,7 @@ void UScoreUI::PrintCurrentScore(int32 point)
 	if (Text_CurrentScore)
 	{
 		// point 를 할당시켜주자.
-		FString scoreStr = FString::Printf(TEXT("현재 점수: %d"), point);
+		FString scoreStr = FString::Printf(TEXT("Current Score: %d"), point);
 		// ui 에 값을 할당
 		Text_CurrentScore->SetText(FText::FromString(scoreStr));
 		
@@ -23,7 +23,7 @@ void UScoreUI::PrintTopScore(int32 point)
 	if (Text_TopScore)
 	{
 		// point 를 할당시켜주자.
-		FString scoreStr = FString::Printf(TEXT("현재 점수: %d"), point);
+		FString scoreStr = FString::Printf(TEXT("Top Score: %d"), point);
 		// ui 에 값을 할당
 		Text_TopScore->SetText(FText::FromString(scoreStr));
 	}

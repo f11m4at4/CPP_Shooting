@@ -127,4 +127,16 @@ private:
 	// UserWidget -> ScoreUI
 	UPROPERTY(EditDefaultsOnly, Category="UI", meta = (AllowPrivateAccess = true))
 	TSubclassOf<class UUserWidget> scoreUIFactory;
+
+	// scoreui 공장에서 만들어진 scoreui 를 기억할 변수
+	UPROPERTY()
+	class UScoreUI* scoreUI;
+
+	// SaveGame 인스턴스를 변수로 기억
+	UPROPERTY()
+	class USaveData* saveData;
+
+public:
+	void SetCurrentScore(int32 point);
+	int32 GetCurrentScore();
 };

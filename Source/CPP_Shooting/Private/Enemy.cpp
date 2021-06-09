@@ -153,6 +153,10 @@ void AEnemy::OnCollisionEnter(AActor* OtherActor)
 		}
 		OtherActor->Destroy();
 	}
+
+	// 점수올려주자
+	gameMode->SetCurrentScore(gameMode->GetCurrentScore() + 1);
+	
 	Destroy();
 }
 
