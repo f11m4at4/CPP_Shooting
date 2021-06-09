@@ -55,7 +55,7 @@ void UPlayerMove::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 	FVector P0 = me->GetActorLocation();
 	FVector P = P0 + vel * DeltaTime;
 	// 2. 위치를 지정하고 싶다. -> 이동하고싶다.
-
+	me->SetActorLocation(P);
 	// Yaw 축으로 회전하고 싶다.
 	// R = R0 + rt
 	/*FRotator R0 = GetActorRotation();
