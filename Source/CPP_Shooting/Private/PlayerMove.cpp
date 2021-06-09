@@ -5,6 +5,7 @@
 #include "CPP_ShootingGameModeBase.h"
 #include "PlayerCPP.h"
 #include <Components/InputComponent.h>
+#include <Components/ArrowComponent.h>
 
 // Sets default values for this component's properties
 UPlayerMove::UPlayerMove()
@@ -23,6 +24,7 @@ void UPlayerMove::BeginPlay()
 	Super::BeginPlay();
 
 	me = Cast<APlayerCPP>(GetOwner());
+
 }
 
 
@@ -53,7 +55,6 @@ void UPlayerMove::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 	FVector P0 = me->GetActorLocation();
 	FVector P = P0 + vel * DeltaTime;
 	// 2. 위치를 지정하고 싶다. -> 이동하고싶다.
-	me->SetActorLocation(P, true);
 
 	// Yaw 축으로 회전하고 싶다.
 	// R = R0 + rt

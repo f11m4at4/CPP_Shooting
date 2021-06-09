@@ -39,16 +39,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Component")
 	class UPlayerMove* playerMove;
 
-	//// 공장
-	//UPROPERTY(EditDefaultsOnly, Category = "BulletClass")
-	//TSubclassOf<class ABullet> bulletFactory;
-
-	// 총알 발사 사운드
-	UPROPERTY(EditDefaultsOnly, Category = "Sound")
-	class USoundBase* bulletSound;
-
-	// 총알 발사 처리할 함수
-	void YogaFire();
+	// PlayerFire 컴포넌트 추가
+	UPROPERTY(VisibleAnywhere, Category = "Component")
+	class UPlayerFire* playerFire;
 
 public:
 	// Sets default values for this pawn's properties
