@@ -22,6 +22,13 @@ ACPP_ShootingGameModeBase::ACPP_ShootingGameModeBase()
 	bulletPoolSize = 10;
 }
 
+void ACPP_ShootingGameModeBase::PlayingProcess(float value)
+{
+	// 3. ui 없애주자
+	startUI->RemoveFromViewport();
+	currentTime = value;
+}
+
 void ACPP_ShootingGameModeBase::InitGameState()
 {
 	Super::InitGameState();
@@ -67,7 +74,8 @@ void ACPP_ShootingGameModeBase::InitGameState()
 		GetWorld()->GetFirstPlayerController()->Possess(player);
 	}
 	// 게임의 상태를 Ready 로 설정해 주자.
-	mState = EGameState::Ready;
+	//mState = EGameState::Ready;
+	SetState(EGameState::Ready);
 
 	// readyUI 가 있다면 화면에 출력해주기
 	// -> reset 버튼이 눌렸을 때
@@ -110,6 +118,8 @@ void ACPP_ShootingGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// 함수 델리게이트 연결
+	playingStateDelegate.BindUObject(this, &ACPP_ShootingGameModeBase::PlayingProcess);
 
 	// 총알 공장 주소가 없다면
 	if (bulletFactory)
@@ -190,7 +200,7 @@ void ACPP_ShootingGameModeBase::Tick(float DeltaSeconds)
 	switch (mState)
 	{
 	case EGameState::Ready:
-		ReadyPage();
+		//ReadyPage();
 		break;
 	case EGameState::Playing:
 		PlayingPage();
@@ -209,13 +219,14 @@ void ACPP_ShootingGameModeBase::ReadyPage()
 	//PRINTLOG(TEXT("READY STATE"));
 	// 일정시간 기다렸다가 상태를 Playing 으로 전환하고 싶다.
 	// 1. 시간이 흘렀으니까
-	currentTime += GetWorld()->DeltaTimeSeconds;
+	//currentTime += GetWorld()->DeltaTimeSeconds;
 	// 2. 일정시간이 됐으니까
 	// 	   만약 경과시간이 대기시간을 초과하였다면
-	if (currentTime > readyDelayTime)
+	//if (currentTime > readyDelayTime)
 	{
 		// 3. 상태를 Playing 으로 전환하고 싶다.
-		mState = EGameState::Playing;
+		//GetWorld()->GetTimerManager().ClearTimer(readyTimer);
+		SetState(EGameState::Playing);
 		currentTime = 0;
 
 		// 화면에 있는 ready ui 를 제거 하고 싶다.
@@ -240,9 +251,8 @@ void ACPP_ShootingGameModeBase::PlayingPage()
 	// 2. 만약 경과시간이 start ui 시간을 초과 했다면
 	if (currentTime > startUITime)
 	{
-		// 3. ui 없애주자
-		startUI->RemoveFromViewport();
-		currentTime = 0;
+		playingStateDelegate.ExecuteIfBound(0);
+		
 	}
 }
 // Gameover 메뉴표현하기
@@ -333,16 +343,25 @@ void ACPP_ShootingGameModeBase::PrintEnumData_Implementation(EGameState value)
 void ACPP_ShootingGameModeBase::SetState(EGameState s)
 {
 	mState = s;
-	// 만약 변경된 상태가 Gameover 라면 widget 보여주자
-	if (mState == EGameState::Gameover)
+	FTimerHandle readyTimer;
+	switch (mState)
 	{
+	case EGameState::Ready:
+		// 타이머를 동작시킨다.
+		GetWorld()->GetTimerManager().SetTimer(readyTimer, this, &ACPP_ShootingGameModeBase::ReadyPage, readyDelayTime, false, readyDelayTime);
+	break;
+	case EGameState::Playing:
+		break;
+	case EGameState::Gameover:
 		// 게임 일시 정지
 		UGameplayStatics::SetGamePaused(GetWorld(), true);
 		// 마우스커서 보이도록 한다.
 		GetWorld()->GetFirstPlayerController()->bShowMouseCursor = true;
 
 		gameoverUI->AddToViewport();
+		break;
 	}
+
 }
 
 ABullet* ACPP_ShootingGameModeBase::CreateBullet()

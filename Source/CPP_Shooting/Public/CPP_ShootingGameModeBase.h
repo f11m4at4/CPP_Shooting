@@ -8,6 +8,9 @@
 #include <Blueprint/UserWidget.h>
 #include "CPP_ShootingGameModeBase.generated.h"
 
+
+DECLARE_DELEGATE_OneParam(FPlayingStateDelegate, float value)
+
 // 총알 오브젝트풀을 위한 속성 선언
 // 필요속성 : 탄창크기, 탄창(오브젝트풀), 총알공장
 
@@ -30,6 +33,11 @@ class CPP_SHOOTING_API ACPP_ShootingGameModeBase : public AGameModeBase
 	
 public:
 	ACPP_ShootingGameModeBase();
+
+	FPlayingStateDelegate playingStateDelegate;
+
+	UFUNCTION()
+	void PlayingProcess(float value);
 
 	// 게임이 초기화 될 때 호출됨.
 	virtual void InitGameState() override;
