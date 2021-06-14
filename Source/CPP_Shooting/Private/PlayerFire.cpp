@@ -27,12 +27,20 @@ void UPlayerFire::BeginPlay()
 }
 
 
+
+
 // Called every frame
 void UPlayerFire::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	// 살아 있는 동안 일정 시간 간격으로 총알을 계속 발사 하고 싶다.
+	currentTime += DeltaTime;
+	if (currentTime > createTime)
+	{
+		currentTime = 0;
+		YogaFire();
+	}
 }
 
 void UPlayerFire::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -84,14 +92,14 @@ void UPlayerFire::YogaFire()
 		// 한발 발사한다.
 		gameMode->SetBulletActive(bullet, true);
 		// 배치시킨다.
-		bullet->SetActorLocation(me->firePosition->GetComponentLocation() + FVector(0, 25, 0));
+		bullet->SetActorLocation(me->firePosition->GetComponentLocation());
 		bullet->SetActorRotation(me->firePosition->GetComponentRotation());
 		
 		// 한발 발사한다.
 		gameMode->SetBulletActive(bullet2, true);
 		// 배치시킨다.
-		bullet2->SetActorLocation(me->firePosition->GetComponentLocation() + FVector(0, -25, 0));
-		bullet2->SetActorRotation(me->firePosition->GetComponentRotation());
+		bullet2->SetActorLocation(me->firePosition2->GetComponentLocation());
+		bullet2->SetActorRotation(me->firePosition2->GetComponentRotation());
 	}
 	// 총알 발사 사운드 재생
 	UGameplayStatics::PlaySound2D(GetWorld(), bulletSound);

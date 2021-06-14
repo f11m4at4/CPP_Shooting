@@ -31,6 +31,11 @@ public:
 	void YogaFire();
 	
 public:
+
+	float currentTime = 0;
+	UPROPERTY(EditAnywhere, Category="Fire Interval")
+	float createTime = 0.2f;
+
 	// 총알 발사 사운드
 	UPROPERTY(EditDefaultsOnly, Category = "Sound")
 	class USoundBase* bulletSound;

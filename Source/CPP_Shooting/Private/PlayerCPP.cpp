@@ -17,7 +17,7 @@
 APlayerCPP::APlayerCPP()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	// BoxComponent 추가하기
 	boxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
@@ -35,6 +35,9 @@ APlayerCPP::APlayerCPP()
 	firePosition = CreateDefaultSubobject<UArrowComponent>(TEXT("FirePosition"));
 	firePosition->SetupAttachment(boxComp);
 	firePosition->SetRelativeLocation(FVector(0, 0, 10));
+
+	firePosition2 = CreateDefaultSubobject<UArrowComponent>(TEXT("FirePosition2"));
+	firePosition2->SetupAttachment(boxComp);
 
 	// StaticMesh 데이터 동적으로 로드해서 할당하기
 	ConstructorHelpers::FObjectFinder<UStaticMesh> TempMesh(TEXT("StaticMesh'/Engine/BasicShapes/Cube.Cube'"));
