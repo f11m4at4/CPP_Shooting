@@ -9,6 +9,8 @@
 #include "Bullet.h"
 #include "CPP_ShootingGameModeBase.h"
 #include "EnemyMove.h"
+#include "EnemyFire.h"
+#include "EnemyBullet.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -26,6 +28,15 @@ AEnemy::AEnemy()
 	meshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	enemyMove = CreateDefaultSubobject<UEnemyMove>(TEXT("EnemyMove"));
+	enemyFire = CreateDefaultSubobject<UEnemyFire>(TEXT("EnemyFire"));
+
+	// 총알을 로드해서 붙여주자
+	ConstructorHelpers::FClassFinder<AEnemyBullet> TempBullet(TEXT("Blueprint'/Game/Blueprints/BP_EnemyBullet.BP_EnemyBullet_C'"));
+
+	if (TempBullet.Succeeded())
+	{
+		enemyFire->bulletFactory = TempBullet.Class;
+	}
 }
 
 // Called when the game starts or when spawned
