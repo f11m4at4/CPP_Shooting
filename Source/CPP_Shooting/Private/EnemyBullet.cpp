@@ -3,6 +3,8 @@
 
 #include "EnemyBullet.h"
 #include <Components/SphereComponent.h>
+#include <Kismet/GameplayStatics.h>
+#include "CPP_ShootingGameModeBase.h"
 
 // Sets default values
 AEnemyBullet::AEnemyBullet()
@@ -25,6 +27,7 @@ void AEnemyBullet::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	sphereComp->OnComponentBeginOverlap.AddDynamic(this, &AEnemyBullet::OnTriggerEnter);
 }
 
 // Called every frame
@@ -42,3 +45,24 @@ void AEnemyBullet::Tick(float DeltaTime)
 	SetActorLocation(P, true);
 }
 
+void AEnemyBullet::OnTriggerEnter(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	// 부딪힌 녀석이 Player 가 아니라면 처리하지 말자
+	if (OtherActor->GetName().Contains(TEXT("Player")) == false)
+	{
+		return;
+	}
+
+	// 폭발효과 생성하기
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), explosionFactory, GetActorTransform());
+
+	// 폭발 사운드 재생
+	UGameplayStatics::PlaySound2D(GetWorld(), explosionSound);
+
+	auto gameMode = Cast<ACPP_ShootingGameModeBase>(GetWorld()->GetAuthGameMode());
+	// 게임 오버 상태로 전환하고 싶다.
+	gameMode->SetState(EGameState::Gameover);
+
+	OtherActor->Destroy();
+	Destroy();
+}

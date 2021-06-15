@@ -21,7 +21,7 @@ AEnemy::AEnemy()
 
 	// 컴포넌트 만들어서 붙이기
 	// 1. Box Collider
-	boxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollider"));
+	boxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollier"));
 	RootComponent = boxComp;
 	// 2. 외관
 	meshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));

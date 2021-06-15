@@ -32,4 +32,15 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	// 气惯瓤苞 加己
+	UPROPERTY(EditDefaultsOnly, Category = "Setting")
+	class UParticleSystem* explosionFactory;
+
+	// 气惯 荤款靛
+	UPROPERTY(EditDefaultsOnly, Category = "Sound")
+	class USoundBase* explosionSound;
+
+
+	UFUNCTION()
+	void OnTriggerEnter(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 };
