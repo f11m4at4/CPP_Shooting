@@ -11,6 +11,7 @@
 #include "EnemyMove.h"
 #include "EnemyFire.h"
 #include "EnemyBullet.h"
+#include <Components/ArrowComponent.h>
 
 // Sets default values
 AEnemy::AEnemy()
@@ -20,12 +21,16 @@ AEnemy::AEnemy()
 
 	// 컴포넌트 만들어서 붙이기
 	// 1. Box Collider
-	boxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollier"));
+	boxComp = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollider"));
 	RootComponent = boxComp;
 	// 2. 외관
 	meshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	meshComp->SetupAttachment(boxComp);
 	meshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	// 3. 총구
+	firePosition = CreateDefaultSubobject<UArrowComponent>(TEXT("FirePosition"));
+	firePosition->SetupAttachment(boxComp);
 
 	enemyMove = CreateDefaultSubobject<UEnemyMove>(TEXT("EnemyMove"));
 	enemyFire = CreateDefaultSubobject<UEnemyFire>(TEXT("EnemyFire"));

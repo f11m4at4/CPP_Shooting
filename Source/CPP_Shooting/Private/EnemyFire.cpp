@@ -2,6 +2,9 @@
 
 
 #include "EnemyFire.h"
+#include "Enemy.h"
+#include <Components/ArrowComponent.h>
+#include "EnemyBullet.h"
 
 // Sets default values for this component's properties
 UEnemyFire::UEnemyFire()
@@ -19,7 +22,9 @@ void UEnemyFire::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+	me = Cast<AEnemy>(GetOwner());
+
+	Fire();
 	
 }
 
@@ -30,5 +35,21 @@ void UEnemyFire::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompo
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UEnemyFire::Fire()
+{
+	// 총알을 하나 발사하고 싶다.
+	// -> 만들고 싶다.
+	// -> 위치시키고 싶다.	
+	//	fireposition
+	if(me && bulletFactory)
+	{
+		auto firePosition = me->firePosition;
+		FActorSpawnParameters params;
+		params.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+		GetWorld()->SpawnActor<AEnemyBullet>(bulletFactory, firePosition->GetComponentLocation(), firePosition->GetComponentRotation(), params);
+	}
 }
 

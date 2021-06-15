@@ -25,6 +25,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Component")
 	class UEnemyFire* enemyFire;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Component")
+	class UArrowComponent* firePosition;
 public:	
 	// Sets default values for this actor's properties
 	AEnemy();
